@@ -1018,7 +1018,6 @@ curl -v -X GET \
 
 ##### Response example
 
-
 ```json
 [
     {
@@ -1079,7 +1078,111 @@ curl -v -X GET \
     }
 ]
 ```
+##### Response example with custom roles
+<ApiLifecycle access="beta" />
 
+```json
+[
+    {
+        "id": "IFIFAX2BIRGUSTQ",
+        "label": "Application Administrator",
+        "type": "APP_ADMIN",
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:17:40.000Z",
+        "lastUpdated": "2019-02-06T16:17:40.000Z",
+        "assignmentType": "USER",
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/users/00ur32Vg0fvpyHZeQ0g3"
+            }
+        }
+    },
+    {
+        "id": "JBCUYUC7IRCVGS27IFCE2SKO",
+        "label": "Help Desk Administrator",
+        "type": "HELP_DESK_ADMIN",
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:17:40.000Z",
+        "lastUpdated": "2019-02-06T16:17:40.000Z",
+        "assignmentType": "USER",
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/users/00ur32Vg0fvpyHZeQ0g3"
+            }
+        }
+    },
+    {
+        "id": "ra125eqBFpETrMwu80g4",
+        "label": "Organization Administrator",
+        "type": "ORG_ADMIN",
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:17:40.000Z",
+        "lastUpdated": "2019-02-06T16:17:40.000Z",
+        "assignmentType": "USER",
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/users/00ur32Vg0fvpyHZeQ0g3"
+            }
+        }
+    },
+    {
+        "id": "gra25fapn1prGTBKV0g4",
+        "label": "API Access Management Administrator",
+        "type": "API_ACCESS_MANAGEMENT_ADMIN",
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:20:57.000Z",
+        "lastUpdated": "2019-02-06T16:20:57.000Z",
+        "assignmentType": "GROUP",
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/groups/00g1ousb3XCr9Dkr20g4"
+            }
+        }
+    },
+    { // NEW
+        "id": "cr0Yq6IJxGIr0ouum0g3", // NEW
+        "label": "UserCreatorRole",
+        "type": "CUSTOM", // NEW
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:20:57.000Z",
+        "lastUpdated": "2019-02-06T16:20:57.000Z",
+        "assignmentType": "USER",
+        "resource-set": "iamoJDFKaJxGIr0oamd9g", // NEW, used to assign targets if needed
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/groups/00g1ousb3XCr9Dkr20g4"
+            },
+            "resources": [{ // NEW, pointing to the policy containing the role assignment
+                "href": "http://${yourOktaDomain}/api/v1/iam/resource-sets/iamoJDFKaJxGIr0oamd9g/resources"
+            }],
+            "permissions": { // NEW, pointing to permissions included with the role
+                "href": "http://${yourOktaDomain}/api/v1/iam/permission-sets/cr0Yq6IJxGIr0ouum0g3/permissions"
+            }
+        }
+    },
+    { // NEW
+        "id": "cr0Yq6IJxGIr0ouum0g3", // NEW
+        "label": "UserCreatorRole",
+        "type": "CUSTOM", // NEW
+        "status": "ACTIVE",
+        "created": "2019-02-06T16:20:57.000Z",
+        "lastUpdated": "2019-02-06T16:20:57.000Z",
+        "assignmentType": "USER",
+        "resource-set": "iamoakjsdQaJxGIr03int1o", // NEW, used to assign targets if needed
+        "_links": {
+            "assignee": {
+                "href": "http://${yourOktaDomain}/api/v1/groups/00u2yrsb3XCr8Yre20o4"
+            },
+            "resources": [{ // NEW, pointing to the policy containing the role assignment
+                "href": "http://${yourOktaDomain}/api/v1/iam/resource-sets/iamoakjsdQaJxGIr03int1o/resources"
+            }],
+            "permissions": { // NEW, pointing to permissions included with the role
+                "href": "http://${yourOktaDomain}/api/v1/iam/permission-sets/cr0Yq6IJxGIr0ouum0g3/permissions"
+            }
+        }
+    }
+]
+```
 #### List Roles assigned to a Group
 
 
@@ -2293,6 +2396,15 @@ The Role object defines several **read-only** properties:
 | lastUpdated      | Timestamp when app user was last updated                | Date                                                                                                                                       | FALSE      | FALSE    | TRUE      |
 | status           | Status of role assignment                               | `ACTIVE`                                                                                                                                   | FALSE      | FALSE    | TRUE      |
 | type             | Type of Role                                            | See the [Role types](#role-types) table for a complete list. | FALSE      | FALSE    | TRUE      |
+| resource-set <ApiLifecycle access="beta" />    | The resource-set id in which the role is granted (only present for custom roles)        | String                                                                                                                                     | TRUE      | TRUE     | TRUE      |
+
+#### Role links
+<ApiLifecycle access="beta" />
+
+The following `_links` are returned:
+* `assignee`: gets the user or group through which this role is assigned
+* `resources`: (only for custom roles) gets a list of resources targetted by this assignment
+* `permissions`: (only for custom roles) gets a list of permissions granted through this assignment
 
 #### Role types
 
@@ -2300,18 +2412,19 @@ Some Roles support optional targets that constrain the Role to a specific set of
 
 Refer to the [product documentation](https://help.okta.com/en/prod/okta_help_CSH.htm#ext_Security_Administrators) for a complete definition of permissions granted to each Role.
 
-| Role type                     | Label                               | Optional targets                      |
-| :---------------------------- | :---------------------------------- | :------------------------------------ |
-| `API_ACCESS_MANAGEMENT_ADMIN` | API Access Management Administrator |                                       |
-| `APP_ADMIN`                   | Application Administrator           | Apps                                  |
-| `GROUP_MEMBERSHIP_ADMIN`      | Group Membership Administrator      | [Groups](/docs/reference/api/groups/) |
-| `HELP_DESK_ADMIN`             | Help Desk Administrator             | [Groups](/docs/reference/api/groups/) |
-| `MOBILE_ADMIN`                | Mobile Administrator                |                                       |
-| `ORG_ADMIN`                   | Organizational Administrator        |                                       |
-| `READ_ONLY_ADMIN`             | Read-Only Administrator             |                                       |
-| `REPORT_ADMIN`                | Report Administrator                |                                       |
-| `SUPER_ADMIN`                 | Super Administrator                 |                                       |
-| `USER_ADMIN`                  | Group Administrator                 | [Groups](/docs/reference/api/groups/) |
+| Role type                               | Label                               | Optional targets                      |
+| :-------------------------------------- | :---------------------------------- | :------------------------------------ |
+| `API_ACCESS_MANAGEMENT_ADMIN`           | API Access Management Administrator |                                       |
+| `APP_ADMIN`                             | Application Administrator           | Apps                                  |
+| `GROUP_MEMBERSHIP_ADMIN`                | Group Membership Administrator      | [Groups](/docs/reference/api/groups/) |
+| `HELP_DESK_ADMIN`                       | Help Desk Administrator             | [Groups](/docs/reference/api/groups/) |
+| `MOBILE_ADMIN`                          | Mobile Administrator                |                                       |
+| `ORG_ADMIN`                             | Organizational Administrator        |                                       |
+| `READ_ONLY_ADMIN`                       | Read-Only Administrator             |                                       |
+| `REPORT_ADMIN`                          | Report Administrator                |                                       |
+| `SUPER_ADMIN`                           | Super Administrator                 |                                       |
+| `USER_ADMIN`                            | Group Administrator                 | [Groups](/docs/reference/api/groups/) |
+| `CUSTOM` <ApiLifecycle access="beta" /> | Custom Label specified by client    | [Groups](/docs/reference/api/groups/) |
 
 `API_ACCESS MANAGEMENT_ADMIN` is available if the API Access Management feature is enabled. For a description of what the Role can do, see [API Access Management Best Practices](/docs/concepts/api-access-management/#recommended-practices-for-api-access-management).
 
