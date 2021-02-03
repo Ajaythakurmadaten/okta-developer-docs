@@ -65,17 +65,35 @@ Note that the distinction between users and groups allows for creating custom ad
 ### Identifiers
 #### Resource Identifiers
 In order to specify a resource targeted by a resource set, you will simply use the REST URL of the corresponding Okta API:
-* All users: `https://${yourOktaDomain}/api/v1/users`
-* All groups: `https://${yourOktaDomain}/api/v1/groups`
-* A specific group: `https://${yourOktaDomain}/api/v1/groups/${targetGroupId}`
-* All users within a specific group: `https://${yourOktaDomain}/api/v1/groups/${targetGroupId}/users`
+* All users
+  ``` http
+  https://${yourOktaDomain}/api/v1/users
+  ```
+* All groups
+  ``` http
+  https://${yourOktaDomain}/api/v1/groups
+  ```
+* A specific group
+  ``` http
+  https://${yourOktaDomain}/api/v1/groups/${targetGroupId}
+  ```
+* All users within a specific group
+  ``` http
+  https://${yourOktaDomain}/api/v1/groups/${targetGroupId}/users
+  ```
 
 > **Tip:** If you use a role with permissions that don't apply to the resources in the resource set, the admin role will have no effect. For example, the `okta.users.profile.manage` permission will give the admin no privileges if granted to a resource set that only included `https://${yourOktaDomain}/api/v1/groups/${targetGroupId}` resources. If you want the admin to be able to manage the users within the group the resource set must include the corresponding `https://${yourOktaDomain}/api/v1/groups/${targetGroupId}/users` resource.
 
 #### Member Identifiers
 In order to specify binding members, you will simply use the REST URL of the corresponding Okta API:
-* A specific user: `https://${yourOktaDomain}/api/v1/users/${memberUserId}`
-* A specific group: `https://${yourOktaDomain}/api/v1/groups/${memberGroupId}`
+* A specific user
+  ``` http
+  https://${yourOktaDomain}/api/v1/users/${memberUserId}
+  ```
+* A specific group
+  ``` http
+  https://${yourOktaDomain}/api/v1/groups/${memberGroupId}
+  ```
 
 ## Custom vs. Standard
 1- An admin can have both types of standard role assignments and custom role bindings. Note that privileges granted to an admin are an aggregate of:
@@ -83,8 +101,9 @@ In order to specify binding members, you will simply use the REST URL of the cor
 * standard roles granted through group membership
 * custom roles directly assigned
 * custom roles granted through group membership
+
 As a result, if an admin was granted a standard role limited to a single group and at the same time received group management privileges on all groups in the org through a custom org, the ultimate outcome is group management on all groups.
 
 2- Not all permissions and resources are currently supported by custom roles.
 
-3- A custom role cannot be assigned without a resource set.
+3- A custom role cannot be assigned without a resource set, hence always being applicable only to a subset of resources. Standard roles on the other hand are always initially granted at the entire org. They are only scoped to specific resources byt subsequent invoking of the [target operations](/docs/reference/api/roles/#role-target-operations).

@@ -111,6 +111,49 @@ curl -v -X GET \
 }
 ```
 
+### List roles
+<ApiOperation method="get" url="/api/v1/iam/roles" />
+
+Get a paginated list of custom roles
+
+#### Response parameters
+
+A paginated list of [custom roles](#custom-role-object)
+
+#### Request example
+
+```bash
+curl -v -X GET \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: SSWS ${api_token}" \
+"https://${yourOktaDomain}/api/v1/iam/roles"
+```
+
+#### Response example
+
+```json
+{
+  "roles": [
+    {
+      "id": "cr0Yq6IJxGIr0ouum0g3",
+      "label": "UserCreator",
+      "description": "..."
+    },
+    {
+      "id": "cr0Fw7HKcWIroo88m3r1",
+      "label": "GroupMembershipManager",
+      "description": "..."
+    }
+  ],
+  "_links": {
+    "next": {
+      "href": "http://${yourOktaDomain}/api/v1/iam/roles?after=cr0Fw7HKcWIroo88m3r1"
+    }
+  }
+}
+```
+
 ### List permissions
 <ApiOperation method="get" url="/api/v1/iam/roles/${roleIdOrName}/permissions" />
 
@@ -357,6 +400,57 @@ curl -v -X GET \
     },
     "bindings": {
       "href": "https://${yourOktaDomain}/api/v1/iam/resource-sets/iamoJDFKaJxGIr0oamd9g/bindings"
+    }
+  }
+}
+```
+
+### List resource sets
+<ApiOperation method="get" url="/api/v1/iam/resource-sets}" />
+
+Get a paginated list of resource sets
+
+#### Response parameters
+
+Paginated list of [resource sets](#resource-set-object)
+
+#### Request example
+
+```bash
+curl -v -X GET \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: SSWS ${api_token}" \
+"https://${yourOktaDomain}/api/v1/iam/resource-sets"
+```
+
+#### Response example
+
+```json
+{
+  "resource-sets": [
+    {
+      "id": "iamoJDFKaJxGIr0oamd9g"
+      "label": "SF-IT-1",
+      "description": "...",
+      "_links": {
+        "self": {
+          "href": "https://${yourOktaDomain}/api/v1/iam/resource-sets/iamoJDFKaJxGIr0oamd9g"
+        },
+        "resources": {
+          "href": "https://${yourOktaDomain}/api/v1/iam/resource-sets/iamoJDFKaJxGIr0oamd9g/resources"
+        },
+        "bindings": {
+          "href": "https://${yourOktaDomain}/api/v1/iam/resource-sets/iamoJDFKaJxGIr0oamd9g/bindings"
+        }
+      },
+      ...
+    ],
+      "_links": {
+        "next": {
+          "href": "http://${yourOktaDomain}/api/v1/iam/resource-sets?after=iamoJDFKaJxGIr0oamd9g"
+        }
+      }
     }
   }
 }
